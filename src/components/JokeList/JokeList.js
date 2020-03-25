@@ -24,32 +24,36 @@ class JokeList extends Component {
     }
   }
   async getJokes() {
-    let jokes = [];
-    while (jokes.length < this.props.numJokesToGet) {
-      let res = await axios.get("https://icanhazdadjoke.com/", {
-        headers: { Accept: "application/json" }
-      });
-      let newJoke = res.data.joke
-      if(!this.seenJokes.has(newJoke)) {
-      jokes.push({
-        id: uuid(),
-        joke: newJoke,
-        votes: 0
-      });
-    } else {
-        console.log(`Duplicate Joke Not Added: ${newJoke}`)
+    try {
+      let jokes = [];
+      while (jokes.length < this.props.numJokesToGet) {
+        let res = await axios.get("https://icanhazdadjoke.com/", {
+          headers: { Accept: "application/json" }
+        });
+        let newJoke = res.data.joke;
+        if (!this.seenJokes.has(newJoke)) {
+          jokes.push({
+            id: uuid(),
+            joke: newJoke,
+            votes: 0
+          });
+        } else {
+          console.log(`Duplicate Joke Not Added: ${newJoke}`);
+        }
+        //   console.log(jokes);
+      }
+      this.setState(
+        st => ({
+          loading: false,
+          jokes: [...st.jokes, ...jokes]
+        }),
+        () =>
+          window.localStorage.setItem("jokes", JSON.stringify(this.state.jokes))
+      );
+    } catch (e) {
+      alert(e);
+      this.setState({ loading: false });
     }
-      //   console.log(jokes);
-    }
-    this.setState(
-      st => ({
-        loading: false,
-        jokes: [...st.jokes, ...jokes]
-      }),
-      () =>
-        window.localStorage.setItem("jokes", JSON.stringify(this.state.jokes))
-    );
-    window.localStorage.setItem("jokes", JSON.stringify(jokes));
   }
   handleVote(id, delta) {
     this.setState(
@@ -66,14 +70,14 @@ class JokeList extends Component {
     this.setState({ loading: true }, this.getJokes);
   }
   render() {
-      if(this.state.loading) {
-          return( 
-              <div className="JokeList-spinner">
-                  <i className="far fa-8x fa-laugh fa-spin" />
-                  <h1 className="JokeList-title">Loading...</h1>
-              </div>
-          )
-      }
+    if (this.state.loading) {
+      return (
+        <div className="JokeList-spinner">
+          <i className="far fa-8x fa-laugh fa-spin" />
+          <h1 className="JokeList-title">Loading...</h1>
+        </div>
+      );
+    }
     return (
       <div className="JokeList">
         <div className="JokeList-sidebar">
