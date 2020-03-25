@@ -13,6 +13,7 @@ class JokeList extends Component {
     this.state = {
       jokes: JSON.parse(window.localStorage.getItem("jokes") || "[]")
     };
+    this.handleClick = this.handleClick.bind(this);
   }
   componentDidMount() {
     if (this.state.jokes.length === 0) {
@@ -32,7 +33,11 @@ class JokeList extends Component {
       });
       //   console.log(jokes);
     }
-    this.setState({ jokes: jokes });
+    this.setState(st => ({
+        jokes: [...st.jokes, ...jokes]
+    }),
+    () => window.localStorage.setItem("jokes", JSON.stringify(this.state.jokes))
+    );
     window.localStorage.setItem("jokes", JSON.stringify(jokes));
   }
   handleVote(id, delta) {
@@ -40,7 +45,12 @@ class JokeList extends Component {
       jokes: st.jokes.map(j =>
         j.id === id ? { ...j, votes: j.votes + delta } : j
       )
-    }));
+    }),
+    () => window.localStorage.setItem("jokes", JSON.stringify(this.state.jokes))
+    );
+  }
+  handleClick() {
+      this.getJokes();
   }
   render() {
     return (
