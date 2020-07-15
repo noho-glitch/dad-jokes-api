@@ -2,7 +2,7 @@
 
 ## About
 
-Single Page React Act Utilizing the Dad Jokes API Where You Can Find and Vote on Your Favorite Dad Jokes.
+Single Page React Act App Utilizing the Dad Jokes API Where You Can Find and Vote on Your Favorite Dad Jokes.
 
 Built With React
 
